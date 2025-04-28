@@ -70,14 +70,14 @@ Carousel.defaultProps = {
     {
       title: "Quality Metal Procurement",
       description: "Sourcing the best metals for your manufacturing needs.",
-      cta1: "Learn More",
+      cta1: "Explore Services",
       cta2: "Contact Us",
       img: banner2,   // <<< no quotes!
     },
     {
       title: "Efficient Scrap Solutions",
       description: "Sustainable solutions for your metal scrap management.",
-      cta1: "Our Process",
+      cta1: "Explore Services",
       cta2: "Get Started",
       img: banner3,   // <<< no quotes!
     }
