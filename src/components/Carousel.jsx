@@ -28,8 +28,11 @@ const Carousel = ({ slides }) => {
             width: '100%',
           }}
         >
-          <div className="bg-black bg-opacity-40 w-full h-full flex flex-col items-center justify-center text-center text-white px-4">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">{slide.title}</h2>
+          {/* Blue-100 overlay with reduced opacity */}
+          <div className="absolute inset-0 bg-blue-300 bg-opacity-30 z-10"></div>
+          
+          <div className="bg-black bg-opacity-40 w-full h-full flex flex-col items-center justify-center text-center text-white px-4 z-20 relative">
+            <h2 className="text-2xl font-bold mb-4">{slide.title}</h2>
             <p className="text-xl md:text-2xl mb-8">{slide.description}</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button className="px-6 py-3 bg-[#ef7713] border-none hover:text-white text-white font-semibold rounded hover:bg-orange-600 transition">
