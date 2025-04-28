@@ -164,7 +164,7 @@ const Contact = () => {
           
           <div className="relative">
             <h2 className="text-2xl font-semibold text-gray-800 mb-2">
-              Send Us a Message
+              Get a Quote
             </h2>
             <div className="w-16 h-1 bg-orange-500 mb-6"></div>
             
