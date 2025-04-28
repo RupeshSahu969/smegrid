@@ -1,7 +1,7 @@
 import { FaFacebookF, FaTwitter, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt,FaLinkedin } from "react-icons/fa";
 
 import { Link } from "react-scroll";
-
+import logo from "../assets/logosmegrid.png"; // Adjust the path as necessary
 function Footer() {
   return (
     <footer className="relative bg-gray-900 text-gray-300 py-16 overflow-hidden">
@@ -20,10 +20,11 @@ function Footer() {
           {/* Logo and Description */}
           <div>
             <h2 className="text-2xl font-bold text-white flex items-center mb-4">
-              <span className="bg-orange-500 p-2 rounded-full mr-2 animate-pulse">
+              {/* <span className="bg-orange-500 p-2 rounded-full mr-2 animate-pulse">
                 <div className="w-4 h-4 bg-white rounded-sm" />
-              </span>
-              SMEGRID
+              </span> */}
+<img src={logo} alt="SMEGRID Logo" className="h-10 md:h-12 mr-2 bg-white text-white" />
+
             </h2>
             <p className="text-sm leading-relaxed">
               Empowering manufacturers with smarter procurement, efficient waste management, and skilled workforce solutions.

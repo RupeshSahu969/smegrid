@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import logo from "../assets/logosmegrid.png"; // Adjust the path as necessary
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -8,13 +8,17 @@ const Navbar = () => {
   return (
     <nav className="bg-white/90 backdrop-blur-sm shadow-md w-full fixed top-0 left-0 z-50 h-16 md:h-20">
       <div className="container mx-auto px-4 py-3">
-        <div className="flex justify-between items-center mt-0 md:mt-4">
+        <div className="flex justify-between items-center mt-0 md:mt-2">
           {/* Logo - Left Side */}
           <div 
-            className="text-2xl font-bold text-gray-800 cursor-pointer hover:text-[#ef7713] transition-colors duration-200"
+            className="cursor-pointer transition-all duration-300 hover:scale-105 md:ml-5"
             onClick={() => navigate("/")}
           >
-            SMEGRID
+            <img 
+              src={logo} 
+              alt="SMEGRID Logo" 
+              className="h-10 md:h-12 transition-transform duration-200 transform-gpu"
+            />
           </div>
 
           {/* Desktop Menu - Centered */}
