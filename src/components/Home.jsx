@@ -9,6 +9,8 @@ import ImpactSection from './ImpactSection';
 import Contact from './Contact';
 import Footer from './Footer';
 import { staggerContainer, fadeInUp, pageTransition } from './animations';
+import Product from './Product';
+
 
 const Home = () => {
   return (
@@ -32,6 +34,10 @@ const Home = () => {
       </motion.div>
       
       <motion.div variants={fadeInUp}>
+        <Product />
+      </motion.div>
+
+      <motion.div variants={fadeInUp}>
         <WhyPartner />
       </motion.div>
       
@@ -42,6 +48,8 @@ const Home = () => {
       <motion.div variants={fadeInUp}>
         <Contact />
       </motion.div>
+
+      
     </motion.div>
   );
 };
