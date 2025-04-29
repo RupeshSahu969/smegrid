@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import smsgridImage from '../assets/Web-banner.jpg'; // Your image path
 import { fadeInUp, scaleIn, staggerContainer } from './animations';
@@ -7,7 +7,8 @@ import 'aos/dist/aos.css';
 
 const About = () => {
   const [showMore, setShowMore] = useState(false);
-  const [activeAccordion, setActiveAccordion] = useState(null);
+  const [activeAccordion, setActiveAccordion] = useState([0, 1, 2]); // All open by default
+  const accordionRef = useRef(null);
 
   useEffect(() => {
     AOS.init({ 
@@ -17,9 +18,27 @@ const About = () => {
       easing: 'ease-in-out'
     });
   }, []);
+
+  useEffect(() => {
+    if (showMore && accordionRef.current) {
+      accordionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [showMore]);
   
   const toggleAccordion = (index) => {
-    setActiveAccordion(activeAccordion === index ? null : index);
+    setActiveAccordion((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  const handleLearnMore = () => {
+    setShowMore((prev) => {
+      const next = !prev;
+      if (next) setActiveAccordion([0, 1, 2]);
+      return next;
+    });
   };
 
   return (
@@ -75,7 +94,7 @@ const About = () => {
           
           <div className="pt-4">
             <button
-              onClick={() => setShowMore(!showMore)}
+              onClick={handleLearnMore}
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center"
               data-aos="zoom-in"
               data-aos-delay="500"
@@ -93,13 +112,14 @@ const About = () => {
       <AnimatePresence>
         {showMore && (
           <div 
+            ref={accordionRef}
             className="bg-gray-50 p-8 rounded-2xl shadow-md mb-12"
             data-aos="fade-up"
           >
             {/* Accordion Item 1: Our Story */}
             <div className="mb-4 border border-gray-200 rounded-lg overflow-hidden">
               <button
-                className={`w-full flex justify-between items-center p-5 text-left bg-white hover:bg-gray-50 transition-colors ${activeAccordion === 0 ? 'border-b border-gray-200' : ''}`}
+                className={`w-full flex justify-between items-center p-5 text-left bg-white hover:bg-gray-50 transition-colors ${activeAccordion.includes(0) ? 'border-b border-gray-200' : ''}`}
                 onClick={() => toggleAccordion(0)}
                 data-aos="fade-up"
                 data-aos-delay="100"
@@ -113,7 +133,7 @@ const About = () => {
                   <h3 className="text-2xl font-semibold text-gray-800">Our Story</h3>
                 </div>
                 <svg 
-                  className={`w-6 h-6 text-orange-500 transform transition-transform duration-300 ${activeAccordion === 0 ? 'rotate-180' : ''}`} 
+                  className={`w-6 h-6 text-orange-500 transform transition-transform duration-300 ${activeAccordion.includes(0) ? 'rotate-180' : ''}`} 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24" 
@@ -123,7 +143,7 @@ const About = () => {
                 </svg>
               </button>
               <div 
-                className={`overflow-hidden transition-all duration-300 ${activeAccordion === 0 ? 'max-h-96' : 'max-h-0'}`}
+                className={`overflow-hidden transition-all duration-300 ${activeAccordion.includes(0) ? 'max-h-96' : 'max-h-0'}`}
               >
                 <div className="p-5 bg-white border-l-4 border-orange-500">
                   <p className="text-gray-600 leading-relaxed">
@@ -157,7 +177,7 @@ const About = () => {
             {/* Accordion Item 2: Our Values */}
             <div className="mb-4 border border-gray-200 rounded-lg overflow-hidden">
               <button
-                className={`w-full flex justify-between items-center p-5 text-left bg-white hover:bg-gray-50 transition-colors ${activeAccordion === 1 ? 'border-b border-gray-200' : ''}`}
+                className={`w-full flex justify-between items-center p-5 text-left bg-white hover:bg-gray-50 transition-colors ${activeAccordion.includes(1) ? 'border-b border-gray-200' : ''}`}
                 onClick={() => toggleAccordion(1)}
                 data-aos="fade-up"
                 data-aos-delay="200"
@@ -171,7 +191,7 @@ const About = () => {
                   <h3 className="text-2xl font-semibold text-gray-800">Our Values</h3>
                 </div>
                 <svg 
-                  className={`w-6 h-6 text-orange-500 transform transition-transform duration-300 ${activeAccordion === 1 ? 'rotate-180' : ''}`} 
+                  className={`w-6 h-6 text-orange-500 transform transition-transform duration-300 ${activeAccordion.includes(1) ? 'rotate-180' : ''}`} 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24" 
@@ -181,7 +201,7 @@ const About = () => {
                 </svg>
               </button>
               <div 
-                className={`overflow-hidden transition-all duration-300 ${activeAccordion === 1 ? 'max-h-96' : 'max-h-0'}`}
+                className={`overflow-hidden transition-all duration-300 ${activeAccordion.includes(1) ? 'max-h-96' : 'max-h-0'}`}
               >
                 <div className="p-5 bg-white border-l-4 border-orange-500">
                   <p className="text-gray-600 leading-relaxed mb-4">
@@ -233,7 +253,7 @@ const About = () => {
             {/* Accordion Item 3: Our Team */}
             <div className="mb-4 border border-gray-200 rounded-lg overflow-hidden">
               <button
-                className={`w-full flex justify-between items-center p-5 text-left bg-white hover:bg-gray-50 transition-colors ${activeAccordion === 2 ? 'border-b border-gray-200' : ''}`}
+                className={`w-full flex justify-between items-center p-5 text-left bg-white hover:bg-gray-50 transition-colors ${activeAccordion.includes(2) ? 'border-b border-gray-200' : ''}`}
                 onClick={() => toggleAccordion(2)}
                 data-aos="fade-up"
                 data-aos-delay="300"
@@ -247,7 +267,7 @@ const About = () => {
                   <h3 className="text-2xl font-semibold text-gray-800">Our Team</h3>
                 </div>
                 <svg 
-                  className={`w-6 h-6 text-orange-500 transform transition-transform duration-300 ${activeAccordion === 2 ? 'rotate-180' : ''}`} 
+                  className={`w-6 h-6 text-orange-500 transform transition-transform duration-300 ${activeAccordion.includes(2) ? 'rotate-180' : ''}`} 
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24" 
@@ -257,7 +277,7 @@ const About = () => {
                 </svg>
               </button>
               <div 
-                className={`overflow-hidden transition-all duration-300 ${activeAccordion === 2 ? 'max-h-96' : 'max-h-0'}`}
+                className={`overflow-hidden transition-all duration-300 ${activeAccordion.includes(2) ? 'max-h-96' : 'max-h-0'}`}
               >
                 <div className="p-5 bg-white border-l-4 border-orange-500">
                   <p className="text-gray-600 leading-relaxed mb-4">
