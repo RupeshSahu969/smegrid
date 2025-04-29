@@ -45,7 +45,7 @@ const ImpactSection = () => {
 
   return (
     <div className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white">
-      {/* Header Section */}
+     
       <div className="max-w-7xl mx-auto text-center mb-16">
         <h2 
           className="text-2xl font-bold text-gray-800 mb-3"

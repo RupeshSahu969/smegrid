@@ -25,7 +25,7 @@ function WhySmegrid() {
       </div>
 
       <div className="max-w-6xl mx-auto grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-        {/* Point 1 */}
+      
         <div
           className="bg-white p-8 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300"
           data-aos="fade-up"

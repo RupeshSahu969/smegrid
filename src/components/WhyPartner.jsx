@@ -78,10 +78,9 @@ function WhyPartner() {
             data-aos-delay={index * 100}
             className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl border-2 border-transparent hover:border-orange-400 transition-all duration-300 group relative overflow-hidden"
           >
-            {/* Decorative background element */}
+           
             <div className="absolute -top-10 -right-10 w-40 h-40 bg-orange-100 rounded-full opacity-30"></div>
-            
-            {/* Icon container */}
+      
             <div className="flex justify-center items-center mb-6 relative z-10">
               <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center group-hover:bg-orange-100 transition-colors duration-300">
                 <div className="text-blue-800 text-4xl group-hover:scale-110 transition-transform duration-300">

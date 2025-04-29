@@ -74,8 +74,7 @@ const About = () => {
             />
           </div>
         </div>
-        
-        {/* Right Side - Text */}
+
         <div 
           className="order-1 md:order-2 space-y-6"
           data-aos="fade-left"

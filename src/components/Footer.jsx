@@ -63,7 +63,6 @@ function Footer() {
             </div>
           </div>
 
-          {/* Our Services */}
           <div>
             <h3 className="text-white font-semibold mb-4">Our Services</h3>
             <div className="flex flex-col space-y-1 text-sm">

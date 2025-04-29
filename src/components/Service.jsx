@@ -105,10 +105,10 @@ function Services() {
               transition: { duration: 0.2 }
             }}
           >
-            {/* Decorative background element */}
+   
             <div className="absolute -top-10 right-0 sm:-top-10 sm:-right-10 w-32 h-32 sm:w-40 sm:h-40 bg-orange-100 rounded-full opacity-30 overflow-hidden pointer-events-none"></div>
             
-            {/* Icon container with increased size and centered */}
+
             <motion.div 
               className="mb-6 mt-4 bg-orange-50 p-4 rounded-full flex items-center justify-center relative z-10"
               whileHover={{ scale: 1.1, rotate: 5 }}

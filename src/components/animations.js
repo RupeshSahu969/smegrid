@@ -76,6 +76,7 @@ export const pageTransition = {
       duration: 0.5
     }
   },
+  
   exit: { 
     opacity: 0,
     transition: {
