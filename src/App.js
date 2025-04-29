@@ -7,7 +7,7 @@ import Services from './components/Service';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import WhySmegrid from './components/WhySmegrid';
-// import QuotePage from './components/QuotePage';
+import ProductDetails from './components/ProductDetails';
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/why-smsgrid" element={<WhySmegrid />} />
+          <Route path="/product-details" element={<ProductDetails  />} />
         </Routes>
       </div>
       <Footer />

@@ -52,7 +52,7 @@ const Contact = () => {
           className="text-2xl font-bold text-gray-800 mb-3"
           data-aos="fade-down"
         >
-          Contact SMEGRID
+          Contact US
         </h2>
         <div 
           className="w-24 h-1 bg-orange-500 mx-auto mb-6"
@@ -171,8 +171,8 @@ const Contact = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-orange-500 group-focus-within:text-orange-600 transition-colors duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-r  rounded-lg opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2  transition-colors duration-300">
                     <FaUser />
                   </div>
                   <input
@@ -181,7 +181,7 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Full Name"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white focus:bg-white z-10 relative"
+                    className="w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2    z-10 relative"
                     required
                   />
                 </div>
@@ -197,7 +197,7 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Email Address"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white focus:bg-white z-10 relative"
+                    className="w-full pl-10 pr-4 py-3 border  rounded-lg focus:ring-2  focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white focus:bg-white z-10 relative"
                     required
                   />
                 </div>
@@ -215,7 +215,7 @@ const Contact = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="Phone Number"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white focus:bg-white z-10 relative"
+                    className="w-full pl-10 pr-4 py-3 border  rounded-lg focus:ring-2  focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white focus:bg-white z-10 relative"
                   />
                 </div>
                 
@@ -230,20 +230,20 @@ const Contact = () => {
                     value={formData.company}
                     onChange={handleChange}
                     placeholder="Company Name"
-                    className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white focus:bg-white z-10 relative"
+                    className="w-full pl-10 pr-4 py-3 border  rounded-lg focus:ring-2  focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white focus:bg-white z-10 relative"
                   />
                 </div>
               </div>
               
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r rounded-lg opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   placeholder="Your Message"
                   rows="5"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 bg-gray-50 hover:bg-white focus:bg-white z-10 relative"
+                  className="w-full px-4 py-3 border  rounded-lg focus:ring-2 focus:border-transparent transition-all duration-300  focus:bg-white z-10 relative"
                   required
                 ></textarea>
               </div>
