@@ -43,7 +43,7 @@ export default function Product() {
 
   return (
     <section className="relative w-full bg-white py-10 px-4">
-      <h2 className="text-center text-3xl md:text-4xl font-bold mb-2">Our Products</h2>
+      <h1 className="text-center text-2xl font-bold md:text-4xl font-bold mb-2">Our Products</h1>
       <p className="text-center text-lg md:text-xl text-gray-600 mb-6">
         Explore our top categories of metal, scrap, and labour
       </p>
