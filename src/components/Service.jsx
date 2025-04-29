@@ -57,13 +57,13 @@ function Services() {
 
   return (
     <motion.section 
-      className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white"
+      className="py-16 px-4 bg-gradient-to-b from-gray-50 to-white overflow-x-hidden"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
     >
       <motion.div 
-        className="max-w-7xl mx-auto text-center mb-16"
+        className="max-w-screen-xl mx-auto text-center mb-16"
         variants={fadeInUp}
       >
         <motion.p 
@@ -106,7 +106,7 @@ function Services() {
             }}
           >
             {/* Decorative background element */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-orange-100 rounded-full opacity-30"></div>
+            <div className="absolute -top-10 right-0 sm:-top-10 sm:-right-10 w-32 h-32 sm:w-40 sm:h-40 bg-orange-100 rounded-full opacity-30 overflow-hidden pointer-events-none"></div>
             
             {/* Icon container with increased size and centered */}
             <motion.div 
