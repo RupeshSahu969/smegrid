@@ -57,6 +57,7 @@ const Navbar = () => {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
+              
               <svg
                 className="w-8 h-8 text-gray-800"
                 fill="none"
