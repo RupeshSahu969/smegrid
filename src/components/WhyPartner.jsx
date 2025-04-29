@@ -21,27 +21,27 @@ function WhyPartner() {
 
   const features = [
     {
-      icon: <FaDollarSign />,
+      icon: <FaDollarSign  className="w-10 h-10"/>,
       title: "Competitive Pricing",
       description: "Our volume-based approach and strategic partnerships ensure you get the best rates in the industry.",
     },
     {
-      icon: <FaShieldAlt />,
+      icon: <FaShieldAlt className="w-10 h-10"/>,
       title: "Assured Quality & Compliance",
       description: "All our processes and materials meet rigorous quality standards and regulatory requirements.",
     },
     {
-      icon: <FaClock />,
+      icon: <FaClock className="w-10 h-10"/>,
       title: "Speedy Execution",
       description: "We understand time is money - our streamlined operations ensure quick turnaround on all services.",
     },
     {
-      icon: <FaChartLine />,
+      icon: <FaChartLine className="w-10 h-10"/>,
       title: "Transparent Processes",
       description: "Complete visibility into pricing, sourcing, and logistics through our detailed reporting.",
     },
     {
-      icon: <FaHandHoldingHeart />,
+      icon: <FaHandHoldingHeart className="w-10 h-10"/>,
       title: "Customer-Centric Service",
       description: "Our dedicated account managers ensure your unique requirements are met at every stage.",
     },
@@ -84,7 +84,7 @@ function WhyPartner() {
             {/* Icon container */}
             <div className="flex justify-center items-center mb-6 relative z-10">
               <div className="w-20 h-20 bg-orange-50 rounded-full flex items-center justify-center group-hover:bg-orange-100 transition-colors duration-300">
-                <div className="text-orange-500 text-4xl group-hover:scale-110 transition-transform duration-300">
+                <div className="text-blue-800 text-4xl group-hover:scale-110 transition-transform duration-300">
                   {feature.icon}
                 </div>
               </div>

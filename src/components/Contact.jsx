@@ -52,7 +52,7 @@ const Contact = () => {
           className="text-2xl font-bold text-gray-800 mb-3"
           data-aos="fade-down"
         >
-          Contact SMEGRID
+          Contact US
         </h2>
         <div 
           className="w-24 h-1 bg-orange-500 mx-auto mb-6"

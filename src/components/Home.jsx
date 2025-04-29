@@ -13,7 +13,7 @@ import { staggerContainer, fadeInUp, pageTransition } from './animations';
 const Home = () => {
   return (
     <motion.div 
-      className="home-page"
+      className="overflow-hidden"
       variants={staggerContainer}
       initial="hidden"
       animate="visible"

@@ -15,7 +15,7 @@ function Services() {
 
   const servicesData = [
     {
-      icon: <FaTruck className="text-orange-500 text-7xl" />,
+      icon: <FaTruck className="text-orange-500 text-7xl w-12 h-12" />,
       title: "Metal Procurement",
       description: "Strategic sourcing of metals and raw materials tailored to your manufacturing needs. Our metal procurement service revolutionizes your supply chain with intelligent sourcing strategies that ensure just-in-time delivery while maintaining the highest quality standards.",
       points: [
@@ -28,7 +28,7 @@ function Services() {
       ]
     },
     {
-      icon: <FaRecycle className="text-orange-500 text-7xl" />,
+      icon: <FaRecycle className="text-orange-500 text-7xl w-12 h-12" />,
       title: "Scrap Trading & Management",
       description: "Turn your manufacturing waste into value with our comprehensive scrap management solutions. Our scrap management ecosystem transforms your waste streams into revenue generators while ensuring full environmental compliance.",
       points: [
@@ -41,7 +41,7 @@ function Services() {
       ]
     },
     {
-      icon: <FaUsers className="text-orange-500 text-7xl" />,
+      icon: <FaUsers className="text-orange-500 text-7xl w-12 h-12" />,
       title: "Skilled Labour Supply",
       description: "Access trained manpower for your manufacturing operations when you need it most. Our workforce solutions provide flexible access to pre-qualified technical talent across all manufacturing disciplines.",
       points: [
@@ -110,7 +110,7 @@ function Services() {
             
             {/* Icon container with increased size and centered */}
             <motion.div 
-              className="mb-6 mt-4 bg-orange-50 p-8 rounded-full flex items-center justify-center relative z-10"
+              className="mb-6 mt-4 bg-orange-50 p-4 rounded-full flex items-center justify-center relative z-10"
               whileHover={{ scale: 1.1, rotate: 5 }}
               transition={{ duration: 0.3 }}
             >

@@ -30,7 +30,7 @@ const About = () => {
           className="text-2xl font-bold text-gray-800 mb-3"
           data-aos="fade-down"
         >
-          About SMEGRID
+          About US
         </h2>
         <div 
           className="w-24 h-1 bg-orange-500 mx-auto mb-6"
@@ -73,7 +73,7 @@ const About = () => {
             bottom line.
           </p>
           
-          <div className="pt-4">
+          <div className="pt-4 flex justify-center mt-8">
             <button
               onClick={() => setShowMore(!showMore)}
               className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center"
