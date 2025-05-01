@@ -1,10 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
+import { fetchCarouselSlides } from '../api';
+// Keeping imports for fallback data
 import banner1 from '../assets/banner1.jpeg';
 import banner2 from '../assets/banner2.jpg';
 import banner3 from '../assets/banner3.jpg';
 
-const Carousel = ({ slides }) => {
+const Carousel = ({ slides: propSlides }) => {
+  const [slides, setSlides] = useState(propSlides);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const timeoutRef = useRef(null);
 
   const resetTimeout = () => {
@@ -21,6 +26,27 @@ const Carousel = ({ slides }) => {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
+  // Fetch carousel slides from API
+  useEffect(() => {
+    const getCarouselSlides = async () => {
+      try {
+        setLoading(true);
+        const response = await fetchCarouselSlides();
+        if (response.data && response.data.data && response.data.data.length > 0) {
+          setSlides(response.data.data);
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching carousel slides:', err);
+        setError('Failed to load carousel slides');
+        setLoading(false);
+      }
+    };
+    
+    getCarouselSlides();
+  }, []);
+
+  // Handle slide transitions
   useEffect(() => {
     resetTimeout();
     
@@ -73,11 +99,23 @@ const Carousel = ({ slides }) => {
           key={index}
           className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
           style={{
-            backgroundImage: `url(${slide.img})`,
+            backgroundImage: slide.mediaType === 'image' ? `url(${slide.img?.startsWith('/') ? `http://localhost:5000${slide.img}` : slide.img})` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
+          {slide.mediaType === 'video' && (
+            <video 
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay 
+              muted 
+              loop
+              playsInline
+            >
+              <source src={`http://localhost:5000${slide.video}`} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          )}
           <div className="absolute inset-0 bg-blue-300 bg-opacity-30"></div>
           <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-center text-white px-4">
             <h2 className="text-2xl md:text-4xl font-bold mb-4">{slide.title}</h2>

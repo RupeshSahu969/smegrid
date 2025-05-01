@@ -1,5 +1,5 @@
 // src/App.js
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
 import About from './components/About';
@@ -9,22 +9,43 @@ import Footer from './components/Footer';
 import WhySmegrid from './components/WhySmegrid';
 import ProductDetails from './components/ProductDetails';
 
+// Admin Components
+import AdminLayout from './components/AdminLayout';
+import Login from './pages/admin/Login';
+import Dashboard from './pages/admin/Dashboard';
+import CarouselManagement from './pages/admin/CarouselManagement';
+import ServiceManagement from './pages/admin/ServiceManagement';
+
+// Layout component for public routes
+const PublicLayout = ({ children }) => (
+  <>
+    <Navbar />
+    <div className="min-h-screen pt-16 md:pt-20">
+      {children}
+    </div>
+    <Footer />
+  </>
+);
+
 function App() {
   return (
-    <>
-      <Navbar />
-      <div className="min-h-screen pt-16 md:pt-20"> 
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/why-smsgrid" element={<WhySmegrid />} />
-          <Route path="/product-details" element={<ProductDetails  />} />
-        </Routes>
-      </div>
-      <Footer />
-    </>
+    <Routes>
+      {/* Admin Routes */}
+      <Route path="/admin/login" element={<Login />} />
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="carousel" element={<CarouselManagement />} />
+        <Route path="services" element={<ServiceManagement />} />
+      </Route>
+      
+      {/* Public Routes */}
+      <Route path="/" element={<PublicLayout><Home /></PublicLayout>} />
+      <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+      <Route path="/services" element={<PublicLayout><Services /></PublicLayout>} />
+      <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
+      <Route path="/why-smsgrid" element={<PublicLayout><WhySmegrid /></PublicLayout>} />
+      <Route path="/product-details" element={<PublicLayout><ProductDetails /></PublicLayout>} />
+    </Routes>
   );
 }
 
