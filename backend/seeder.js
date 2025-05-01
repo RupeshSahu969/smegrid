@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Service = require('./models/Service');
+const Carousel = require('./models/Carousel');
+
+// Import data
+const carouselData = require('./data/carouselData');
 
 // Load env vars
 dotenv.config();
@@ -57,6 +61,9 @@ const importData = async () => {
     await Service.deleteMany();
     await Service.insertMany(services);
     
+    await Carousel.deleteMany();
+    await Carousel.insertMany(carouselData);
+    
     console.log('Data imported successfully');
     process.exit();
   } catch (error) {
@@ -69,6 +76,7 @@ const importData = async () => {
 const deleteData = async () => {
   try {
     await Service.deleteMany();
+    await Carousel.deleteMany();
     
     console.log('Data destroyed successfully');
     process.exit();

@@ -44,7 +44,14 @@ exports.getService = async (req, res) => {
 // Create new service
 exports.createService = async (req, res) => {
   try {
-    const service = await Service.create(req.body);
+    const serviceData = { ...req.body };
+    
+    // If file was uploaded, set the image path
+    if (req.file) {
+      serviceData.image = `/uploads/services/${req.file.filename}`;
+    }
+    
+    const service = await Service.create(serviceData);
     
     res.status(201).json({
       success: true,
@@ -70,9 +77,16 @@ exports.createService = async (req, res) => {
 // Update service
 exports.updateService = async (req, res) => {
   try {
+    const serviceData = { ...req.body };
+    
+    // If file was uploaded, set the image path
+    if (req.file) {
+      serviceData.image = `/uploads/services/${req.file.filename}`;
+    }
+    
     const service = await Service.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      serviceData,
       { new: true, runValidators: true }
     );
     
