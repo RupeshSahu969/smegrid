@@ -10,6 +10,7 @@ import Contact from './Contact';
 import Footer from './Footer';
 import { staggerContainer, fadeInUp, pageTransition } from './animations';
 import Product from './Product';
+import HowItWorks from './HowItWorks';
 
 
 const Home = () => {
@@ -35,6 +36,10 @@ const Home = () => {
       
       <motion.div variants={fadeInUp}>
         <Product />
+      </motion.div>
+
+      <motion.div variants={fadeInUp}>
+        <HowItWorks/>
       </motion.div>
 
       <motion.div variants={fadeInUp}>
