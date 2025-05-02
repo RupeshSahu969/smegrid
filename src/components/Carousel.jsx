@@ -1,16 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchCarouselSlides } from '../api';
-// Keeping imports for fallback data
 import banner1 from '../assets/banner1.jpeg';
 import banner2 from '../assets/banner2.jpg';
 import banner3 from '../assets/banner3.jpg';
-
-const Carousel = ({ slides: propSlides }) => {
-  const [slides, setSlides] = useState(propSlides);
+import { Link, useNavigate } from 'react-router-dom';
+import logo from "../assets/navlogo-removebg-preview.png";
+import logo1 from "../assets/logosmegrid.png";
+const Carousel = ({ slides }) => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [navbarColor, setNavbarColor] = useState('bg-[#0c2c5a]'); // Deep blue
+
+  const [textColor, setTextColor] = useState('text-white'); // Default text color
+  const [logoSrc, setLogoSrc] = useState(logo); // Default logo (e.g. white text on transparent)
+
   const timeoutRef = useRef(null);
+  const navigate = useNavigate();
 
   const resetTimeout = () => {
     if (timeoutRef.current) {
@@ -26,32 +30,11 @@ const Carousel = ({ slides: propSlides }) => {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
-  // Fetch carousel slides from API
-  useEffect(() => {
-    const getCarouselSlides = async () => {
-      try {
-        setLoading(true);
-        const response = await fetchCarouselSlides();
-        if (response.data && response.data.data && response.data.data.length > 0) {
-          setSlides(response.data.data);
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching carousel slides:', err);
-        setError('Failed to load carousel slides');
-        setLoading(false);
-      }
-    };
-    
-    getCarouselSlides();
-  }, []);
-
-  // Handle slide transitions
   useEffect(() => {
     resetTimeout();
     
     // First slide stays for 7 seconds, others for 5 seconds
-    const slideDelay = currentSlide === 0 ? 17000 : 10000;
+    const slideDelay = currentSlide === 0 ? 7000 : 5000;
     
     timeoutRef.current = setTimeout(() => {
       nextSlide();
@@ -60,84 +43,218 @@ const Carousel = ({ slides: propSlides }) => {
     return () => resetTimeout();
   }, [currentSlide, slides.length]);
 
+  useEffect(() => {
+    // Scroll to the top when the page loads or changes
+    window.scrollTo(0, 0);  
+  
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setNavbarColor('bg-white shadow-md'); 
+        setTextColor('text-black'); // Change text color to black
+        setLogoSrc(logo1); 
+      } else {
+        setNavbarColor('bg-[#0c2c5a]');
+
+        setTextColor('text-white'); // Revert text color to white
+        setLogoSrc(logo); 
+      }
+    };
+  
+    // Listen to scroll events
+    window.addEventListener('scroll', handleScroll);
+    
+    // Cleanup on component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+  
+
+  const handleExploreClick = (slideData) => {
+    // Store data in local storage
+    localStorage.setItem('selectedService', JSON.stringify(slideData));
+    // Navigate to details page
+    navigate('/services/details');
+  };
+
   return (
-    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden">
-      {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-colors"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
+    <>
+   <nav className={`${navbarColor} ${textColor} w-full fixed top-0 left-0 z-50 h-16 md:h-20 transition-all duration-300`}>
 
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 bg-black/30 hover:bg-black/50 text-white p-3 rounded-full transition-colors"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-
-      {/* Slides */}
-      {slides.map((slide, index) => (
-        <div 
-          key={index}
-          className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
-          style={{
-            backgroundImage: slide.mediaType === 'image' ? `url(${slide.img?.startsWith('/') ? `http://localhost:5000${slide.img}` : slide.img})` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        >
-          {slide.mediaType === 'video' && (
-            <video 
-              className="absolute inset-0 w-full h-full object-cover"
-              autoPlay 
-              muted 
-              loop
-              playsInline
+        <div className="container mx-auto px-4 md:px-6 py-3">
+          <div className="flex justify-between items-center relative">
+            {/* Logo - Left Side */}
+            <div 
+              className="cursor-pointer transition-all duration-300 hover:scale-105 z-10"
+              onClick={() => navigate("/")}
             >
-              <source src={`http://localhost:5000${slide.video}`} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          )}
-          <div className="absolute inset-0 bg-blue-300 bg-opacity-30"></div>
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex flex-col items-center justify-center text-center text-white px-4">
-            <h2 className="text-2xl md:text-4xl font-bold mb-4">{slide.title}</h2>
-            <p className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">{slide.description}</p>
-            <button className="px-8 py-3 bg-[#ef7713] hover:bg-orange-600 text-white font-semibold rounded transition-colors">
-              {slide.cta1}
-            </button>
-          </div>
-        </div>
-      ))}
+              <img 
+                src={logoSrc} 
+                alt="SMEGRID Logo" 
+                className="h-10 md:h-12 bg-blue lg:h-14 transition-transform duration-200"
+              />
+            </div>
 
-      {/* Indicators */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrentSlide(index)}
-            className={`w-3 h-3 rounded-full transition-colors ${index === currentSlide ? 'bg-white' : 'bg-gray-400'}`}
-          />
-        ))}
+            {/* Centered Desktop Navigation */}
+            <div className="hidden lg:flex absolute left-1/2 -translate-x-1/2 space-x-8">
+              <Link to="/" className="nav-link hover hover:text-[#ef7713]">Home</Link>
+              <Link to="/services" className="nav-link hover:text-[#ef7713]">Services</Link>
+              <Link to="/about" className="nav-link hover:text-[#ef7713]">About Us</Link>
+              <Link to="/why-smsgrid" className="nav-link hover:text-[#ef7713]">Why SMEGRID</Link>
+              <Link to="/contact" className="nav-link hover:text-[#ef7713]">Contact Us</Link>
+            </div>
+
+            {/* Right-aligned Desktop Quote Button */}
+            <div className="hidden lg:block md:hidden">
+              <Link
+                to="/contact"
+                className="px-6 py-2.5 bg-[#ef7713] text-white rounded-md text-sm font-medium hover:bg-[#d4690f] transition-colors"
+              >
+                Get a Quote
+              </Link>
+            </div>
+
+            {/* Mobile/Tablet Section */}
+            <div className="flex items-center space-x-4 lg:hidden">
+              {/* Tablet Quote Button */}
+              <Link
+                to="/contact"
+                className="hidden md:inline-block px-4 py-2 bg-[#ef7713] text-white rounded-md text-sm font-medium hover:bg-[#d4690f] transition-colors"
+              >
+                Get Quote
+              </Link>
+              
+              {/* Hamburger Menu Button */}
+              <button
+                className="p-2 rounded-lg hover:bg-gray-100 bg-blend-color-dodge transition-colors"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                <svg
+                  className="w-8 h-8 text-gray-800"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  {mobileMenuOpen ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16"
+                    />
+                  )}
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Menu Dropdown */}
+          {mobileMenuOpen && (
+            <div className="lg:hidden absolute left-0 w-full bg-white shadow-lg py-4 px-6 space-y-3 animate-slide-down">
+              <MobileNavLink to="/" onClick={setMobileMenuOpen}>Home</MobileNavLink>
+              <MobileNavLink to="/services" onClick={setMobileMenuOpen}>Services</MobileNavLink>
+              <MobileNavLink to="/about" onClick={setMobileMenuOpen}>About Us</MobileNavLink>
+              <MobileNavLink to="/why-smsgrid" onClick={setMobileMenuOpen}>Why SMEGRID</MobileNavLink>
+              <MobileNavLink to="/contact" onClick={setMobileMenuOpen}>Contact Us</MobileNavLink>
+              
+              <div className="pt-4 border-t border-gray-100 md:hidden">
+                <Link
+                  to="/contact"
+                   className="inline-block px-4 py-2 bg-[#ef7713] hover:bg-[#d4690f] text-white font-semibold rounded-md shadow-md hover:shadow-sm text-center whitespace-nowrap transition-all duration-200 cursor-pointer"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Get a Quote
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </nav>
+
+      <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden md:mt-20">
+        {/* Slides Container */}
+        <div 
+          className="flex h-full transition-transform duration-700 ease-in-out"
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
+          {slides.map((slide, index) => (
+            <div 
+              key={index}
+              className="w-full h-full flex-shrink-0 relative"
+            >
+              {/* Image Container */}
+              <div className="absolute inset-0 h-full w-full">
+                <img
+                  src={slide.img}
+                  alt={slide.title}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+
+              {/* Content Overlay */}
+              <div className="absolute inset-0 bg-[#0c2c5a] bg-opacity-40 flex items-center">
+                <div className="text-white max-w-2xl px-8 md:px-16 ml-4 md:ml-16 space-y-6">
+                  <h2 
+                    className="text-2xl md:text-4xl font-bold transform transition-all duration-700 ease-out"
+                    style={{ 
+                      opacity: currentSlide === index ? 1 : 0,
+                      transform: `translateX(${currentSlide === index ? '0' : '-50px'})`
+                    }}
+                  >
+                    {slide.title}
+                  </h2>
+                  <p 
+                    className="text-lg md:text-xl transform transition-all duration-700 ease-out delay-150"
+                    style={{
+                      opacity: currentSlide === index ? 1 : 0,
+                      transform: `translateX(${currentSlide === index ? '0' : '-50px'})`
+                    }}
+                  >
+                    {slide.description}
+                  </p>
+                  <button 
+                    className="px-8 py-3 bg-[#ef7713] hover:bg-orange-600 w-100px text-white font-semibold
+                     rounded transition-all transform duration-700 ease-out delay-300"
+                    onClick={() => handleExploreClick(slide)}
+                    style={{
+                      opacity: currentSlide === index ? 1 : 0,
+                      transform: `translateX(${currentSlide === index ? '0' : '-50px'})`
+                    }}
+                  >
+                     {slide.cta1}
+                  </button>
+                  
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Next and Previous Buttons */}
+        <div className="absolute top-1/2 left-4 transform -translate-y-1/2 text-white z-10">
+          <button onClick={prevSlide} className="p-2 rounded-full bg-black bg-opacity-40 hover:bg-opacity-70">
+            <svg className="w-6 h-6">
+              <path d="M12 19l-7-7 7-7" stroke="currentColor" fill="none" strokeWidth="2"/>
+            </svg>
+          </button>
+        </div>
+        <div className="absolute top-1/2 right-4 transform -translate-y-1/2 text-white z-10">
+          <button onClick={nextSlide} className="p-2 rounded-full bg-black bg-opacity-40 hover:bg-opacity-70">
+            <svg className="w-6 h-6">
+              <path d="M12 5l7 7-7 7" stroke="currentColor" fill="none" strokeWidth="2"/>
+            </svg>
+          </button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -163,5 +280,15 @@ Carousel.defaultProps = {
     }
   ]
 };
+
+const MobileNavLink = ({ to, onClick, children }) => (
+  <Link
+    to={to}
+    className="block py-2 px-4 text-gray-800 hover:bg-orange-50 rounded-md font-medium text-lg transition-colors"
+    onClick={() => onClick(false)}
+  >
+    {children}
+  </Link>
+);
 
 export default Carousel;

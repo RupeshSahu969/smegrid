@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { fetchServices } from '../api';
-// Keeping imports for fallback data
 import imag1 from "../assets/image1.jpg";
 import imag2 from "../assets/image2.jpg";
 import imag3 from "../assets/image3.jpg";
 
 function Services() {
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -20,36 +14,11 @@ function Services() {
     });
   }, []);
 
-  // Fetch services from API
-  useEffect(() => {
-    const getServices = async () => {
-      try {
-        setLoading(true);
-        const response = await fetchServices();
-        if (response.data && response.data.data && response.data.data.length > 0) {
-          setServices(response.data.data);
-        } else {
-          // Use fallback data if API returns empty
-          setServices(fallbackServicesData);
-        }
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching services:', err);
-        setError('Failed to load services');
-        setServices(fallbackServicesData);
-        setLoading(false);
-      }
-    };
-    
-    getServices();
-  }, []);
-
   const handleLearnMore = (serviceTitle) => {
     alert(`Learn more about ${serviceTitle}`);
   };
 
-  // Fallback data in case API fails
-  const fallbackServicesData = [
+  const servicesData = [
     {
       image: imag1,
       title: "Metal Procurement",
@@ -90,20 +59,7 @@ function Services() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {loading ? (
-          <div className="col-span-3 text-center py-8">
-            <p className="text-gray-600">Loading services...</p>
-          </div>
-        ) : error ? (
-          <div className="col-span-3 text-center py-8">
-            <p className="text-red-500">{error}</p>
-          </div>
-        ) : services.length === 0 ? (
-          <div className="col-span-3 text-center py-8">
-            <p className="text-gray-600">No services found.</p>
-          </div>
-        ) : (
-          services.map((service, index) => (
+        {servicesData.map((service, index) => (
           <div
             key={index}
             data-aos="fade-up"
@@ -112,7 +68,7 @@ function Services() {
           >
             <div className="mb-4">
               <img
-                src={service.image ? (service.image.startsWith('/') ? `http://localhost:5000${service.image}` : service.image) : (service.icon === 'FaTruck' ? imag1 : service.icon === 'FaRecycle' ? imag2 : imag3)}
+                src={service.image}
                 alt={service.title}
                 className="mx-auto h-48 w-full rounded-md"
               />
@@ -128,7 +84,7 @@ function Services() {
               Learn More
             </button> */}
           </div>
-        )))}
+        ))}
       </div>
     </section>
   );

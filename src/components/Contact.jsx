@@ -13,6 +13,7 @@ import {
 import { Link } from 'react-scroll';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+import Chatbot from './ChatBot';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -278,6 +279,13 @@ const Contact = () => {
           referrerPolicy="no-referrer-when-downgrade"
         ></iframe>
       </div>
+      <button
+        // onClick={() => alert('How can we help you?')}
+        className="fixed bottom-6 right-6 z-50 bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all duration-300"
+      >
+        <FaPaperPlane />
+        <span>Ask Us  <Chatbot/></span>
+      </button>
     </div>
   );
 };
