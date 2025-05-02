@@ -1,5 +1,5 @@
 // src/components/Home.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Carousel from './Carousel';
 import About from './About';
@@ -11,9 +11,13 @@ import Footer from './Footer';
 import { staggerContainer, fadeInUp, pageTransition } from './animations';
 import Product from './Product';
 import HowItWorks from './HowItWorks';
+import Navbar from './Navbar';
+import { useNavigate } from 'react-router-dom';
 
 
 const Home = () => {
+  
+
   return (
     <motion.div 
       className="overflow-hidden"
@@ -22,7 +26,10 @@ const Home = () => {
       animate="visible"
       {...pageTransition}
     >
+   
+      
       <motion.div variants={fadeInUp}>
+       
         <Carousel />
       </motion.div>
       
@@ -53,7 +60,7 @@ const Home = () => {
       <motion.div variants={fadeInUp}>
         <Contact />
       </motion.div>
-
+     <Footer/>
       
     </motion.div>
   );
