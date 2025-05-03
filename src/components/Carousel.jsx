@@ -32,16 +32,13 @@ const Carousel = ({ slides }) => {
 
   useEffect(() => {
     resetTimeout();
-    
-    // First slide stays for 7 seconds, others for 5 seconds
-    const slideDelay = currentSlide === 0 ? 7000 : 5000;
-    
+    const delay = currentSlide === 0 ? 17000 : 10000; // longer time for first slide
     timeoutRef.current = setTimeout(() => {
       nextSlide();
-    }, slideDelay);
-
+    }, delay);
     return () => resetTimeout();
   }, [currentSlide, slides.length]);
+  
 
   useEffect(() => {
     // Scroll to the top when the page loads or changes
@@ -179,63 +176,37 @@ const Carousel = ({ slides }) => {
         </div>
       </nav>
 
-      <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden md:mt-20">
+      <div className="relative w-full h-[400px] md:h-[650px] overflow-hidden md:mt-20 mt-10">
         {/* Slides Container */}
         <div 
-          className="flex h-full transition-transform duration-700 ease-in-out"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+  className="flex h-full transition-transform duration-700 ease-in-out"
+  // style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+>
+{slides.map((slide, index) => (
+  <div 
+    key={index}
+    className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+  >
+    <img
+      src={slide.img}
+      alt={slide.title}
+      className="h-full w-full object-cover absolute inset-0"
+    />
+    <div className="absolute inset-0 bg-[#0c2c5a] bg-opacity-40 flex items-center">
+      <div className="text-white max-w-2xl px-8 md:px-16 ml-4 md:ml-16 space-y-6">
+        <h2 className="text-2xl md:text-4xl font-bold">{slide.title}</h2>
+        <p className="text-lg md:text-xl">{slide.description}</p>
+        <button
+          className="px-8 py-3 bg-[#ef7713] hover:bg-orange-600 text-white font-semibold rounded"
+          onClick={() => handleExploreClick(slide)}
         >
-          {slides.map((slide, index) => (
-            <div 
-              key={index}
-              className="w-full h-full flex-shrink-0 relative"
-            >
-              {/* Image Container */}
-              <div className="absolute inset-0 h-full w-full">
-                <img
-                  src={slide.img}
-                  alt={slide.title}
-                  className="h-full w-full object-cover"
-                />
-              </div>
+          {slide.cta1}
+        </button>
+      </div>
+    </div>
+  </div>
+))}
 
-              {/* Content Overlay */}
-              <div className="absolute inset-0 bg-[#0c2c5a] bg-opacity-40 flex items-center">
-                <div className="text-white max-w-2xl px-8 md:px-16 ml-4 md:ml-16 space-y-6">
-                  <h2 
-                    className="text-2xl md:text-4xl font-bold transform transition-all duration-700 ease-out"
-                    style={{ 
-                      opacity: currentSlide === index ? 1 : 0,
-                      transform: `translateX(${currentSlide === index ? '0' : '-50px'})`
-                    }}
-                  >
-                    {slide.title}
-                  </h2>
-                  <p 
-                    className="text-lg md:text-xl transform transition-all duration-700 ease-out delay-150"
-                    style={{
-                      opacity: currentSlide === index ? 1 : 0,
-                      transform: `translateX(${currentSlide === index ? '0' : '-50px'})`
-                    }}
-                  >
-                    {slide.description}
-                  </p>
-                  <button 
-                    className="px-8 py-3 bg-[#ef7713] hover:bg-orange-600 w-100px text-white font-semibold
-                     rounded transition-all transform duration-700 ease-out delay-300"
-                    onClick={() => handleExploreClick(slide)}
-                    style={{
-                      opacity: currentSlide === index ? 1 : 0,
-                      transform: `translateX(${currentSlide === index ? '0' : '-50px'})`
-                    }}
-                  >
-                     {slide.cta1}
-                  </button>
-                  
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* Next and Previous Buttons */}
@@ -253,6 +224,19 @@ const Carousel = ({ slides }) => {
             </svg>
           </button>
         </div>
+        <div className="absolute z-30 flex -translate-x-1/2 bottom-5 left-1/2 space-x-3">
+  {slides.map((_, idx) => (
+    <button
+      key={idx}
+      onClick={() => setCurrentSlide(idx)}
+      className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+        currentSlide === idx ? "bg-[#6735e4]" : "bg-gray-300"
+      }`}
+      aria-label={`Slide ${idx + 1}`}
+    />
+  ))}
+</div>
+
       </div>
     </>
   );

@@ -35,6 +35,12 @@ const About = () => {
     setShowMore((prev) => !prev);
   };
 
+  useEffect(() => {
+    if (!showMore) {
+      setActiveAccordion([]);
+    }
+  }, [showMore]);
+  
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
       {/* Header */}
@@ -51,17 +57,9 @@ const About = () => {
 
       {/* Main Content */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-20 items-center mb-16">
-        <div className="order-2 md:order-1" data-aos="fade-right" data-aos-delay="100">
-          <div className="rounded-xl overflow-hidden shadow-lg border-2 border-gray-200 transform transition-transform duration-500 hover:scale-105">
-            <img
-              src={smsgridImage}
-              alt="SMEGRID"
-              className="w-full h-auto object-cover"
-            />
-          </div>
-        </div>
+        
 
-        <div className="order-1 md:order-2 space-y-6" data-aos="fade-left" data-aos-delay="300">
+      <div className="order-1 md:order-1 space-y-6" data-aos="fade-left" data-aos-delay="300">
           <h1 className="text-1xl font-bold text-gray-800">
             Empowering Manufacturing Excellence
           </h1>
@@ -85,6 +83,16 @@ const About = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={showMore ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
               </svg>
             </button>
+          </div>
+        </div>
+        
+        <div className="order-2 md:order-2" data-aos="fade-right" data-aos-delay="100">
+          <div className="rounded-xl overflow-hidden shadow-lg border-2 border-gray-200 transform transition-transform duration-500 hover:scale-105">
+            <img
+              src={smsgridImage}
+              alt="SMEGRID"
+              className="w-full h-auto object-cover"
+            />
           </div>
         </div>
       </div>

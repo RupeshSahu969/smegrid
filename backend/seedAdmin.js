@@ -3,7 +3,7 @@ const User = require('./models/User');
 require('dotenv').config();
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/smegrid')
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB Connected'))
   .catch(err => {
     console.error('MongoDB Connection Error:', err);
@@ -24,7 +24,7 @@ const seedAdmin = async () => {
     const admin = await User.create({
       username: 'admin',
       email: 'admin@gmail.com',
-      password: '123!@#',
+      password: 'admin@1234',
       role: 'admin'
     });
 

@@ -72,7 +72,8 @@ function WhyPartner() {
           data-aos="fade-up"
           data-aos-delay="300"
         >
-          Our unique approach to industrial services delivers measurable value to manufacturing businesses of all sizes.
+          Our unique approach to industrial services delivers measurable value
+          <br/> to manufacturing businesses of all sizes.
         </p>
       </div>
 

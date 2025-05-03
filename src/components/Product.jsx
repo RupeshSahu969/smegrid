@@ -1,44 +1,56 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import product1 from "../assets/product1.jpg";
 import product2 from "../assets/product2.jpg";
 import product3 from "../assets/product3.jpg";
 
-const originalSlides = [
-  {
-    id: "07",
-    category: "Building & Construction Waste",
-    description: "In the present era of the circular economy...",
-    image: product1,
-  },
-  {
-    id: "08",
-    category: "Scrap Metals",
-    description: "Making waste work by recycling metals.",
-    image: product2,
-  },
-  {
-    id: "09",
-    category: "Labour Services",
-    description: "Workforce support across all industries.",
-    image: product3,
-  },
-];
-
-// Clones for infinite loop effect
-const slides = [
-  originalSlides[originalSlides.length - 1], // Clone last
-  ...originalSlides,
-  originalSlides[0], // Clone first
-];
-
 export default function Product() {
+  const [originalSlides, setOriginalSlides] = useState([]);
   const [index, setIndex] = useState(1);
   const [transition, setTransition] = useState(true);
   const sliderRef = useRef(null);
   const autoSlideRef = useRef(null);
   const navigate = useNavigate();
+
+  // Simulate fetching slide data
+  useEffect(() => {
+    const fetchSlides = async () => {
+      const data = [
+        {
+          id: "07",
+          category: "Building & Construction Waste",
+          description: "In the present era of the circular economy...",
+          image: product1,
+        },
+        {
+          id: "08",
+          category: "Scrap Metals",
+          description: "Making waste work by recycling metals.",
+          image: product2,
+        },
+        {
+          id: "09",
+          category: "Labour Services",
+          description: "Workforce support across all industries.",
+          image: product3,
+        },
+      ];
+      setOriginalSlides(data);
+    };
+
+    fetchSlides();
+  }, []);
+
+  // Create cloned slides array
+  const slides = useMemo(() => {
+    if (originalSlides.length === 0) return [];
+    return [
+      originalSlides[originalSlides.length - 1], // Clone last
+      ...originalSlides,
+      originalSlides[0], // Clone first
+    ];
+  }, [originalSlides]);
 
   const getRealIndex = (i) => {
     if (i === 0) return originalSlides.length - 1;
@@ -54,9 +66,11 @@ export default function Product() {
   };
 
   useEffect(() => {
-    startAutoSlide();
+    if (slides.length > 0) {
+      startAutoSlide();
+    }
     return () => clearInterval(autoSlideRef.current);
-  }, []);
+  }, [slides]);
 
   const nextSlide = () => {
     setIndex((prev) => prev + 1);
@@ -69,6 +83,8 @@ export default function Product() {
   };
 
   useEffect(() => {
+    if (slides.length === 0) return;
+
     if (index === slides.length - 1) {
       setTimeout(() => {
         setTransition(false);
@@ -82,7 +98,7 @@ export default function Product() {
     } else {
       setTransition(true);
     }
-  }, [index]);
+  }, [index, slides]);
 
   const handleViewMore = () => {
     const realIndex = getRealIndex(index);
@@ -93,28 +109,25 @@ export default function Product() {
     navigate("/product-details");
   };
 
+  if (originalSlides.length === 0) return <div>Loading...</div>;
+
   return (
     <section className="py-1 bg-gray-50">
-     <div className="max-w-7xl mx-auto px-4 text-center mb-12">
-  <h1 className="text-2xl font-bold text-gray-800 mb-3">
-    Our Products
-  </h1>
-  
-  <div
-    className="w-24 h-1 bg-orange-500 mx-auto mb-6"
-    data-aos="zoom-in"
-    data-aos-delay="200"
-  />
-
-  <div className="flex justify-center">
-    <p className="text-base text-gray-600 mb-6 max-w-md">
-      Our company offers a range of essential products including Metal,
-      Scrap, and Labour—widely used across industrial, construction, and
-      manufacturing sectors.
-    </p>
-  </div>
-</div>
-
+      <div className="max-w-7xl mx-auto px-4 text-center mb-12">
+        <h1 className="text-2xl font-bold text-gray-800 mb-3">Our Products</h1>
+        <div
+          className="w-24 h-1 bg-orange-500 mx-auto mb-6"
+          data-aos="zoom-in"
+          data-aos-delay="200"
+        />
+        <div className="flex justify-center">
+          <p className="text-base text-gray-600 mb-6 max-w-md">
+            Our company offers a range of essential products including Metal,
+            Scrap, and Labour—widely used across industrial, construction, and
+            manufacturing sectors.
+          </p>
+        </div>
+      </div>
 
       <div className="relative w-full overflow-hidden bg-white h-[450px] md:h-[600px]">
         <div
