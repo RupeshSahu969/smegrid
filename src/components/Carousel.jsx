@@ -5,16 +5,61 @@ import banner3 from '../assets/banner3.jpg';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from "../assets/navlogo-removebg-preview.png";
 import logo1 from "../assets/logosmegrid.png";
-const Carousel = ({ slides }) => {
+import axios from 'axios';
+const Carousel = ({ slides: propSlides }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [navbarColor, setNavbarColor] = useState('bg-transparent'); // Change to transparent
-
   const [textColor, setTextColor] = useState('text-white'); // Default text color
   const [logoSrc, setLogoSrc] = useState(logo); // Default logo (e.g. white text on transparent)
+  
+  // State for API-loaded slides
+  const [slides, setSlides] = useState(propSlides || []);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const timeoutRef = useRef(null);
   const navigate = useNavigate();
+  
+  // Fetch slides from API
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        console.log('Fetching carousel slides from API...');
+        const response = await axios.get('http://localhost:5000/api/carousel');
+        console.log('API response:', response.data);
+        
+        if (response.data.success && response.data.data.length > 0) {
+          console.log('Using slides from API');
+          
+          // Process slides to ensure image paths are correct
+          const processedSlides = response.data.data.map(slide => ({
+            ...slide,
+            // Keep the original img path - we'll handle it in the render function
+            // This ensures we have the original path for debugging
+          }));
+          
+          setSlides(processedSlides);
+        } else {
+          console.log('API returned empty data, using default slides');
+          // If API returns empty array, use default slides as fallback
+          setSlides(defaultSlides);
+        }
+      } catch (err) {
+        console.error('Error fetching carousel slides:', err);
+        setError(err);
+        // Use default slides as fallback if API fails
+        console.log('API error, using default slides');
+        setSlides(defaultSlides);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // Always fetch from API first
+    fetchSlides();
+    
+  }, []); // Remove propSlides dependency to ensure API is always called
 
   const resetTimeout = () => {
     if (timeoutRef.current) {
@@ -187,11 +232,30 @@ const Carousel = ({ slides }) => {
     key={index}
     className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
   >
-    <img
-      src={slide.img}
-      alt={slide.title}
-      className="h-full w-full object-cover absolute inset-0"
-    />
+    {slide.mediaType === 'video' ? (
+      <video
+        src={slide.video}
+        alt={slide.title}
+        className="h-full w-full object-cover absolute inset-0"
+        autoPlay
+        muted
+        loop
+      />
+    ) : (
+      <img
+        src={typeof slide.img === 'string' && slide.img.startsWith('/') ? 
+          `http://localhost:5000${slide.img}` : slide.img}
+        alt={slide.title}
+        className="h-full w-full object-cover absolute inset-0"
+        onError={(e) => {
+          console.error('Image failed to load:', slide.img);
+          // Fallback to default image if loading fails
+          if (index === 0) e.target.src = banner1;
+          else if (index === 1) e.target.src = banner2;
+          else e.target.src = banner3;
+        }}
+      />
+    )}
     <div className="absolute inset-0 bg-opacity-40 flex items-center">
       {/* Blue Semicircle Overlay */}
       <div className="absolute left-0 top-0 bottom-0 w-[50%] md:w-[40%] lg:w-[35%] flex items-center justify-center">
@@ -246,27 +310,31 @@ const Carousel = ({ slides }) => {
   );
 };
 
+// Default slides to use as fallback if API fails
+const defaultSlides = [
+  {
+    title: "Powering the Backbone of Manufacturing",
+    description: "Metal Procurement, Scrap Solutions, and Skilled Manpower — All in One Place.",
+    cta1: "Explore Services",
+    img: banner1,
+  },
+  {
+    title: "Quality Metal Procurement",
+    description: "Sourcing the best metals for your manufacturing needs.",
+    cta1: "Explore Services",
+    img: banner2,
+  },
+  {
+    title: "Efficient Scrap Solutions",
+    description: "Sustainable solutions for your metal scrap management.",
+    cta1: "Explore Services",
+    img: banner3,
+  }
+];
+
+// Set default props - empty array to ensure API is always called
 Carousel.defaultProps = {
-  slides: [
-    {
-      title: "Powering the Backbone of Manufacturing",
-      description: "Metal Procurement, Scrap Solutions, and Skilled Manpower — All in One Place.",
-      cta1: "Explore Services",
-      img: banner1,
-    },
-    {
-      title: "Quality Metal Procurement",
-      description: "Sourcing the best metals for your manufacturing needs.",
-      cta1: "Explore Services",
-      img: banner2,
-    },
-    {
-      title: "Efficient Scrap Solutions",
-      description: "Sustainable solutions for your metal scrap management.",
-      cta1: "Explore Services",
-      img: banner3,
-    }
-  ]
+  slides: []
 };
 
 const MobileNavLink = ({ to, onClick, children }) => (

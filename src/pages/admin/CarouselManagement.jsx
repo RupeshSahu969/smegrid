@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Carousel from '../../components/Carousel';
 
 const CarouselManagement = () => {
   const [slides, setSlides] = useState([]);
@@ -40,10 +41,20 @@ const CarouselManagement = () => {
       });
       
       if (res.data.success) {
-        setSlides(res.data.data);
+        // Process slides to ensure they have the correct format for both admin display and preview
+        const processedSlides = res.data.data.map(slide => ({
+          ...slide,
+          // Ensure image URLs are properly formatted for display
+          img: slide.img && !slide.img.startsWith('http') ? 
+            `http://localhost:5000${slide.img}` : slide.img,
+          video: slide.video && !slide.video.startsWith('http') ? 
+            `http://localhost:5000${slide.video}` : slide.video
+        }));
+        setSlides(processedSlides);
       }
       setLoading(false);
     } catch (err) {
+      console.error('Error fetching slides:', err);
       setError('Failed to fetch carousel slides');
       setLoading(false);
     }
@@ -379,12 +390,13 @@ const CarouselManagement = () => {
                             {slide.mediaType === 'video' ? (
                               <video 
                                 className="h-16 w-24 object-cover rounded"
-                                src={`http://localhost:5000${slide.video}`}
+                                src={slide.video}
+                                controls
                               />
                             ) : (
                               <img 
                                 className="h-16 w-24 object-cover rounded"
-                                src={`http://localhost:5000${slide.img}`} 
+                                src={slide.img} 
                                 alt={slide.title}
                               />
                             )}
@@ -424,6 +436,20 @@ const CarouselManagement = () => {
             </div>
           </div>
         </div>
+        
+        {/* Carousel Preview Section */}
+        {slides.length > 0 && (
+          <div className="mt-10">
+            <div className="bg-white shadow rounded-lg p-6">
+              <h2 className="text-lg font-medium text-gray-900 mb-4">Carousel Preview</h2>
+              <p className="text-sm text-gray-500 mb-6">This is how your carousel will appear on the website</p>
+              
+              <div className="border rounded-lg overflow-hidden">
+                <Carousel slides={slides} />
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
