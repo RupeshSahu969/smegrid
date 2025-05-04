@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const fs = require('fs');
 
 // Load environment variables
 dotenv.config();
@@ -11,6 +12,7 @@ dotenv.config();
 const serviceRoutes = require('./routes/serviceRoutes');
 const carouselRoutes = require('./routes/carouselRoutes');
 const authRoutes = require('./routes/authRoutes');
+const productRoutes = require('./routes/products');
 
 // Initialize express app
 const app = express();
@@ -18,6 +20,13 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log(`Created main uploads directory: ${uploadsDir}`);
+}
 
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -31,6 +40,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/smegrid')
 app.use('/api/services', serviceRoutes);
 app.use('/api/carousel', carouselRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
 
 // Base route
 app.get('/', (req, res) => {

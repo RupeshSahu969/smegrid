@@ -15,6 +15,7 @@ import Login from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 import CarouselManagement from './pages/admin/CarouselManagement';
 import ServiceManagement from './pages/admin/ServiceManagement';
+import ProductManagement from './pages/admin/ProductManagement';
 import ExploreServices from './components/ExploreServices';
 
 // Layout component for public routes
@@ -37,6 +38,7 @@ function App() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="carousel" element={<CarouselManagement />} />
         <Route path="services" element={<ServiceManagement />} />
+        <Route path="products" element={<ProductManagement />} />
       </Route>
       
       {/* Public Routes */}
@@ -46,6 +48,7 @@ function App() {
       <Route path="/contact" element={<PublicLayout><Contact /></PublicLayout>} />
       <Route path="/why-smsgrid" element={<PublicLayout><WhySmegrid /></PublicLayout>} />
       <Route path="/product-details" element={<PublicLayout><ProductDetails /></PublicLayout>} />
+      <Route path="/product-details/:id" element={<PublicLayout><ProductDetails /></PublicLayout>} />
       <Route path="/services/details" element={<PublicLayout><ExploreServices /></PublicLayout>} />
     </Routes>
   );

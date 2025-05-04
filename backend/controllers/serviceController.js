@@ -3,13 +3,25 @@ const Service = require('../models/Service');
 // Get all services
 exports.getServices = async (req, res) => {
   try {
-    const services = await Service.find();
+    const services = await Service.find().sort({ createdAt: -1 });
+    
+    // Format the response to match the frontend structure
+    const formattedServices = services.map(service => ({
+      _id: service._id,
+      title: service.title,
+      description: service.description,
+      image: service.image ? `${process.env.BASE_URL || ''}${service.image}` : null,
+      icon: service.icon,
+      points: service.points
+    }));
+    
     res.status(200).json({
       success: true,
       count: services.length,
-      data: services
+      data: formattedServices
     });
   } catch (error) {
+    console.error('Error fetching services:', error);
     res.status(500).json({
       success: false,
       error: 'Server Error'
@@ -29,11 +41,22 @@ exports.getService = async (req, res) => {
       });
     }
     
+    // Format the response to match the frontend structure
+    const formattedService = {
+      _id: service._id,
+      title: service.title,
+      description: service.description,
+      image: service.image ? `${process.env.BASE_URL || ''}${service.image}` : null,
+      icon: service.icon,
+      points: service.points
+    };
+    
     res.status(200).json({
       success: true,
-      data: service
+      data: formattedService
     });
   } catch (error) {
+    console.error('Error fetching service:', error);
     res.status(500).json({
       success: false,
       error: 'Server Error'
@@ -46,6 +69,23 @@ exports.createService = async (req, res) => {
   try {
     const serviceData = { ...req.body };
     
+    // Ensure required fields are present
+    if (!serviceData.title || !serviceData.description) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide title and description'
+      });
+    }
+    
+    // If points is passed as a string, convert it to an array
+    if (serviceData.points && typeof serviceData.points === 'string') {
+      try {
+        serviceData.points = JSON.parse(serviceData.points);
+      } catch (e) {
+        serviceData.points = serviceData.points.split(',').map(point => point.trim());
+      }
+    }
+    
     // If file was uploaded, set the image path
     if (req.file) {
       serviceData.image = `/uploads/services/${req.file.filename}`;
@@ -53,11 +93,22 @@ exports.createService = async (req, res) => {
     
     const service = await Service.create(serviceData);
     
+    // Format the response to match the frontend structure
+    const formattedService = {
+      _id: service._id,
+      title: service.title,
+      description: service.description,
+      image: service.image ? `${process.env.BASE_URL || ''}${service.image}` : null,
+      icon: service.icon,
+      points: service.points
+    };
+    
     res.status(201).json({
       success: true,
-      data: service
+      data: formattedService
     });
   } catch (error) {
+    console.error('Error creating service:', error);
     if (error.name === 'ValidationError') {
       const messages = Object.values(error.errors).map(val => val.message);
       
@@ -68,7 +119,8 @@ exports.createService = async (req, res) => {
     } else {
       res.status(500).json({
         success: false,
-        error: 'Server Error'
+        error: 'Server Error',
+        message: error.message
       });
     }
   }
@@ -78,6 +130,15 @@ exports.createService = async (req, res) => {
 exports.updateService = async (req, res) => {
   try {
     const serviceData = { ...req.body };
+    
+    // If points is passed as a string, convert it to an array
+    if (serviceData.points && typeof serviceData.points === 'string') {
+      try {
+        serviceData.points = JSON.parse(serviceData.points);
+      } catch (e) {
+        serviceData.points = serviceData.points.split(',').map(point => point.trim());
+      }
+    }
     
     // If file was uploaded, set the image path
     if (req.file) {
@@ -97,14 +158,26 @@ exports.updateService = async (req, res) => {
       });
     }
     
+    // Format the response to match the frontend structure
+    const formattedService = {
+      _id: service._id,
+      title: service.title,
+      description: service.description,
+      image: service.image ? `${process.env.BASE_URL || ''}${service.image}` : null,
+      icon: service.icon,
+      points: service.points
+    };
+    
     res.status(200).json({
       success: true,
-      data: service
+      data: formattedService
     });
   } catch (error) {
+    console.error('Error updating service:', error);
     res.status(500).json({
       success: false,
-      error: 'Server Error'
+      error: 'Server Error',
+      message: error.message
     });
   }
 };

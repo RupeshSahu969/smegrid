@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import axios from "axios";
 import product1 from "../assets/product1.jpg";
 import product2 from "../assets/product2.jpg";
 import product3 from "../assets/product3.jpg";
@@ -13,33 +14,52 @@ export default function Product() {
   const autoSlideRef = useRef(null);
   const navigate = useNavigate();
 
-  // Simulate fetching slide data
+  // Default product data as fallback
+  const defaultProducts = [
+    {
+      id: "07",
+      category: "Building & Construction Waste",
+      description: "In the present era of the circular economy...",
+      image: product1,
+    },
+    {
+      id: "08",
+      category: "Scrap Metals",
+      description: "Making waste work by recycling metals.",
+      image: product2,
+    },
+    {
+      id: "09",
+      category: "Labour Services",
+      description: "Workforce support across all industries.",
+      image: product3,
+    },
+  ];
+
+  // Fetch products from API
   useEffect(() => {
-    const fetchSlides = async () => {
-      const data = [
-        {
-          id: "07",
-          category: "Building & Construction Waste",
-          description: "In the present era of the circular economy...",
-          image: product1,
-        },
-        {
-          id: "08",
-          category: "Scrap Metals",
-          description: "Making waste work by recycling metals.",
-          image: product2,
-        },
-        {
-          id: "09",
-          category: "Labour Services",
-          description: "Workforce support across all industries.",
-          image: product3,
-        },
-      ];
-      setOriginalSlides(data);
+    const fetchProducts = async () => {
+      try {
+        console.log('Fetching products from API...');
+        const response = await axios.get('http://localhost:5000/api/products');
+        console.log('API response:', response.data);
+        
+        if (response.data.success && response.data.data.length > 0) {
+          console.log('Using products from API');
+          setOriginalSlides(response.data.data);
+        } else {
+          console.log('API returned empty data, using default products');
+          setOriginalSlides(defaultProducts);
+        }
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        // Use default products as fallback if API fails
+        console.log('API error, using default products');
+        setOriginalSlides(defaultProducts);
+      }
     };
 
-    fetchSlides();
+    fetchProducts();
   }, []);
 
   // Create cloned slides array
@@ -166,9 +186,17 @@ export default function Product() {
                   </div>
                   <div className="w-full md:w-[calc(100%-120px)] h-[600px] md:ml-[380px]">
                     <img
-                      src={slide.image}
+                      src={typeof slide.image === 'string' && slide.image.startsWith('/') ? 
+                        `http://localhost:5000${slide.image}` : slide.image}
                       alt={slide.category}
                       className="w-full h-full object-cover md:rounded-b-2xl md:rounded-r-2xl"
+                      onError={(e) => {
+                        console.error('Image failed to load:', slide.image);
+                        // Fallback to default image if loading fails
+                        if (index % 3 === 0) e.target.src = product1;
+                        else if (index % 3 === 1) e.target.src = product2;
+                        else e.target.src = product3;
+                      }}
                     />
                   </div>
                 </div>

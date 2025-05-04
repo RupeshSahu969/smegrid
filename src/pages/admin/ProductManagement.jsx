@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Services from '../../components/Service';
+import Product from '../../components/Product';
 
-const ServiceManagement = () => {
-  const [services, setServices] = useState([]);
+const ProductManagement = () => {
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
-    icon: 'FaTruck',
-    title: '',
+    category: '',
     description: '',
-    points: ''
+    details: '',
+    order: 0,
+    isActive: true
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [currentServiceId, setCurrentServiceId] = useState(null);
+  const [currentProductId, setCurrentProductId] = useState(null);
   
   const navigate = useNavigate();
 
@@ -27,45 +28,45 @@ const ServiceManagement = () => {
     }
   }, [navigate]);
 
-  // Fetch services
-  const fetchServices = async () => {
+  // Fetch products
+  const fetchProducts = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/services', {
+      const res = await axios.get('http://localhost:5000/api/products', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       
       if (res.data.success) {
-        // Process services to ensure image URLs are properly formatted for display
-        const processedServices = res.data.data.map(service => ({
-          ...service,
+        // Process products to ensure image URLs are properly formatted for display
+        const processedProducts = res.data.data.map(product => ({
+          ...product,
           // Ensure image URLs are properly formatted
-          image: service.image && !service.image.startsWith('http') ? 
-            `http://localhost:5000${service.image}` : service.image
+          image: product.image && !product.image.startsWith('http') ? 
+            `http://localhost:5000${product.image}` : product.image
         }));
-        setServices(processedServices);
-        console.log('Fetched services:', processedServices);
+        setProducts(processedProducts);
+        console.log('Fetched products:', processedProducts);
       }
       setLoading(false);
     } catch (err) {
-      console.error('Error fetching services:', err);
-      setError('Failed to fetch services');
+      console.error('Error fetching products:', err);
+      setError('Failed to fetch products');
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchServices();
+    fetchProducts();
   }, []);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
     });
   };
 
@@ -75,14 +76,15 @@ const ServiceManagement = () => {
 
   const resetForm = () => {
     setFormData({
-      icon: 'FaTruck',
-      title: '',
+      category: '',
       description: '',
-      points: ''
+      details: '',
+      order: 0,
+      isActive: true
     });
     setSelectedFile(null);
     setEditMode(false);
-    setCurrentServiceId(null);
+    setCurrentProductId(null);
   };
 
   const handleSubmit = async (e) => {
@@ -90,15 +92,14 @@ const ServiceManagement = () => {
     
     try {
       setLoading(true);
+      setError('');
       const token = localStorage.getItem('token');
       
       const data = new FormData();
       Object.keys(formData).forEach(key => {
-        if (key === 'points') {
-          // Convert points string to array
-          const pointsArray = formData.points.split('\n').filter(point => point.trim() !== '');
-          // Add points as a JSON string
-          data.append('points', JSON.stringify(pointsArray));
+        // Convert boolean values to strings since FormData might handle them inconsistently
+        if (typeof formData[key] === 'boolean') {
+          data.append(key, formData[key].toString());
         } else {
           data.append(key, formData[key]);
         }
@@ -108,19 +109,25 @@ const ServiceManagement = () => {
         data.append('image', selectedFile);
       }
 
+      // Debug FormData contents
+      console.log('Submitting product with data:');
+      for (let pair of data.entries()) {
+        console.log(pair[0] + ': ' + pair[1]);
+      }
+
       let res;
       
       if (editMode) {
-        // Update existing service
-        res = await axios.put(`http://localhost:5000/api/services/${currentServiceId}`, data, {
+        // Update existing product
+        res = await axios.put(`http://localhost:5000/api/products/${currentProductId}`, data, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`
           }
         });
       } else {
-        // Create new service
-        res = await axios.post('http://localhost:5000/api/services', data, {
+        // Create new product
+        res = await axios.post('http://localhost:5000/api/products', data, {
           headers: {
             'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${token}`
@@ -130,29 +137,35 @@ const ServiceManagement = () => {
 
       if (res.data.success) {
         resetForm();
-        fetchServices();
+        fetchProducts();
+        console.log('Product saved successfully:', res.data);
+      } else {
+        setError(res.data.error || 'An error occurred while saving the product');
+        console.error('Error response:', res.data);
       }
       
       setLoading(false);
     } catch (err) {
-      setError('Failed to save service');
+      console.error('Error saving product:', err.response?.data || err.message || err);
+      setError(err.response?.data?.error || err.response?.data?.message || err.message || 'Failed to save product');
       setLoading(false);
     }
   };
 
-  const handleEdit = (service) => {
+  const handleEdit = (product) => {
     setFormData({
-      icon: service.icon,
-      title: service.title,
-      description: service.description,
-      points: Array.isArray(service.points) ? service.points.join('\n') : ''
+      category: product.category,
+      description: product.description,
+      details: product.details || '',
+      order: product.order || 0,
+      isActive: product.isActive !== false
     });
     setEditMode(true);
-    setCurrentServiceId(service._id);
+    setCurrentProductId(product.id);
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this service?')) {
+    if (!window.confirm('Are you sure you want to delete this product?')) {
       return;
     }
     
@@ -160,19 +173,20 @@ const ServiceManagement = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       
-      const res = await axios.delete(`http://localhost:5000/api/services/${id}`, {
+      const res = await axios.delete(`http://localhost:5000/api/products/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       
       if (res.data.success) {
-        fetchServices();
+        fetchProducts();
       }
       
       setLoading(false);
     } catch (err) {
-      setError('Failed to delete service');
+      console.error('Error deleting product:', err);
+      setError('Failed to delete product');
       setLoading(false);
     }
   };
@@ -182,7 +196,7 @@ const ServiceManagement = () => {
       {/* Header */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Services Management</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Product Management</h1>
           <button
             onClick={() => navigate('/admin/dashboard')}
             className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
@@ -199,7 +213,7 @@ const ServiceManagement = () => {
           <div className="md:col-span-1">
             <div className="bg-white shadow rounded-lg p-6">
               <h2 className="text-lg font-medium text-gray-900 mb-4">
-                {editMode ? 'Edit Service' : 'Add New Service'}
+                {editMode ? 'Edit Product' : 'Add New Product'}
               </h2>
               
               {error && (
@@ -211,28 +225,12 @@ const ServiceManagement = () => {
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Icon
-                  </label>
-                  <select
-                    name="icon"
-                    value={formData.icon}
-                    onChange={handleInputChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    <option value="FaTruck">Truck (Metal Procurement)</option>
-                    <option value="FaRecycle">Recycle (Scrap Management)</option>
-                    <option value="FaUsers">Users (Skilled Labor)</option>
-                  </select>
-                </div>
-                
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Title
+                    Category
                   </label>
                   <input
                     type="text"
-                    name="title"
-                    value={formData.title}
+                    name="category"
+                    value={formData.category}
                     onChange={handleInputChange}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     required
@@ -255,20 +253,31 @@ const ServiceManagement = () => {
                 
                 <div className="mb-4">
                   <label className="block text-gray-700 text-sm font-bold mb-2">
-                    Points (One per line)
+                    Details (Optional)
                   </label>
                   <textarea
-                    name="points"
-                    value={formData.points}
+                    name="details"
+                    value={formData.details}
                     onChange={handleInputChange}
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    rows="6"
-                    required
-                    placeholder="Global network of verified suppliers&#10;Just-in-time delivery&#10;Cost optimization through bulk purchasing"
+                    rows="5"
                   ></textarea>
                   <p className="text-sm text-gray-500 mt-1">
-                    Enter each point on a new line
+                    Additional details about the product
                   </p>
+                </div>
+                
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Order
+                  </label>
+                  <input
+                    type="number"
+                    name="order"
+                    value={formData.order}
+                    onChange={handleInputChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
                 </div>
                 
                 <div className="mb-4">
@@ -288,13 +297,26 @@ const ServiceManagement = () => {
                   )}
                 </div>
                 
+                <div className="mb-4">
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      name="isActive"
+                      checked={formData.isActive}
+                      onChange={handleInputChange}
+                      className="mr-2"
+                    />
+                    <span className="text-gray-700 text-sm font-bold">Active</span>
+                  </label>
+                </div>
+                
                 <div className="flex items-center justify-between">
                   <button
                     type="submit"
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     disabled={loading}
                   >
-                    {loading ? 'Saving...' : (editMode ? 'Update Service' : 'Add Service')}
+                    {loading ? 'Saving...' : (editMode ? 'Update Product' : 'Add Product')}
                   </button>
                   
                   {editMode && (
@@ -311,18 +333,18 @@ const ServiceManagement = () => {
             </div>
           </div>
           
-          {/* Services List Section */}
+          {/* Products List Section */}
           <div className="md:col-span-2">
             <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Services</h2>
+              <h2 className="text-lg font-medium text-gray-900 mb-4">Products</h2>
               
-              {loading && <p className="text-gray-500">Loading services...</p>}
+              {loading && <p className="text-gray-500">Loading products...</p>}
               
-              {!loading && services.length === 0 && (
-                <p className="text-gray-500">No services found. Add your first service!</p>
+              {!loading && products.length === 0 && (
+                <p className="text-gray-500">No products found. Add your first product!</p>
               )}
               
-              {!loading && services.length > 0 && (
+              {!loading && products.length > 0 && (
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -331,10 +353,13 @@ const ServiceManagement = () => {
                           Image
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Title
+                          Category
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Icon
+                          Order
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Actions
@@ -342,16 +367,16 @@ const ServiceManagement = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {services.map((service) => (
-                        <tr key={service._id}>
+                      {products.map((product) => (
+                        <tr key={product.id}>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            {service.image ? (
+                            {product.image ? (
                               <img 
                                 className="h-16 w-24 object-cover rounded"
-                                src={service.image} 
-                                alt={service.title}
+                                src={product.image} 
+                                alt={product.category}
                                 onError={(e) => {
-                                  console.error('Image failed to load:', service.image);
+                                  console.error('Image failed to load:', product.image);
                                   e.target.onerror = null;
                                   e.target.src = 'https://via.placeholder.com/150?text=Image+Error';
                                 }}
@@ -363,21 +388,26 @@ const ServiceManagement = () => {
                             )}
                           </td>
                           <td className="px-6 py-4">
-                            <div className="text-sm font-medium text-gray-900">{service.title}</div>
-                            <div className="text-sm text-gray-500 truncate max-w-xs">{service.description}</div>
+                            <div className="text-sm font-medium text-gray-900">{product.category}</div>
+                            <div className="text-sm text-gray-500 truncate max-w-xs">{product.description}</div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900">{service.icon}</div>
+                            <div className="text-sm text-gray-900">{product.order}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                              {product.isActive ? 'Active' : 'Inactive'}
+                            </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <button
-                              onClick={() => handleEdit(service)}
+                              onClick={() => handleEdit(product)}
                               className="text-indigo-600 hover:text-indigo-900 mr-3"
                             >
                               Edit
                             </button>
                             <button
-                              onClick={() => handleDelete(service._id)}
+                              onClick={() => handleDelete(product.id)}
                               className="text-red-600 hover:text-red-900"
                             >
                               Delete
@@ -392,23 +422,9 @@ const ServiceManagement = () => {
             </div>
           </div>
         </div>
-        
-        {/* Service Preview Section */}
-        {services.length > 0 && (
-          <div className="mt-10">
-            <div className="bg-white shadow rounded-lg p-6">
-              <h2 className="text-lg font-medium text-gray-900 mb-4">Services Preview</h2>
-              <p className="text-sm text-gray-500 mb-6">This is how your services will appear on the website</p>
-              
-              <div className="border rounded-lg overflow-hidden p-4">
-                <Services />
-              </div>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );
 };
 
-export default ServiceManagement;
+export default ProductManagement;
