@@ -8,7 +8,7 @@ import logo1 from "../assets/logosmegrid.png";
 const Carousel = ({ slides }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [navbarColor, setNavbarColor] = useState('bg-[#0c2c5a]'); // Deep blue
+  const [navbarColor, setNavbarColor] = useState('bg-transparent'); // Change to transparent
 
   const [textColor, setTextColor] = useState('text-white'); // Default text color
   const [logoSrc, setLogoSrc] = useState(logo); // Default logo (e.g. white text on transparent)
@@ -192,16 +192,20 @@ const Carousel = ({ slides }) => {
       alt={slide.title}
       className="h-full w-full object-cover absolute inset-0"
     />
-    <div className="absolute inset-0 bg-[#0c2c5a] bg-opacity-40 flex items-center">
-      <div className="text-white max-w-2xl px-8 md:px-16 ml-4 md:ml-16 space-y-6">
-        <h2 className="text-2xl md:text-4xl font-bold">{slide.title}</h2>
-        <p className="text-lg md:text-xl">{slide.description}</p>
-        <button
-          className="px-8 py-3 bg-[#ef7713] hover:bg-orange-600 text-white font-semibold rounded"
-          onClick={() => handleExploreClick(slide)}
-        >
-          {slide.cta1}
-        </button>
+    <div className="absolute inset-0 bg-opacity-40 flex items-center">
+      {/* Blue Semicircle Overlay */}
+      <div className="absolute left-0 top-0 bottom-0 w-[50%] md:w-[40%] lg:w-[35%] flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#0c2c5a] opacity-75 rounded-r-full"></div>
+        <div className="relative z-10 text-white px-6 md:px-10 text-center">
+          <h2 className="text-2xl md:text-4xl font-bold mb-4">{slide.title}</h2>
+          <p className="text-sm md:text-lg mb-6">{slide.description}</p>
+          <button
+            className="px-6 py-2 bg-[#ef7713] hover:bg-orange-600 text-white font-semibold rounded"
+            onClick={() => handleExploreClick(slide)}
+          >
+            {slide.cta1}
+          </button>
+        </div>
       </div>
     </div>
   </div>
