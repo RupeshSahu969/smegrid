@@ -106,19 +106,38 @@ export default function Product() {
     if (slides.length === 0) return;
 
     if (index === slides.length - 1) {
+      // When reaching the cloned last slide
       setTimeout(() => {
         setTransition(false);
         setIndex(1);
       }, 1000);
     } else if (index === 0) {
+      // When reaching the cloned first slide
       setTimeout(() => {
         setTransition(false);
         setIndex(slides.length - 2);
       }, 1000);
     } else {
-      setTransition(true);
+      if (!transition) {
+        // Re-enable transition after position reset
+        setTimeout(() => {
+          setTransition(true);
+        }, 20);
+      } else {
+        setTransition(true);
+      }
     }
-  }, [index, slides]);
+  }, [index, slides, transition]);
+
+  // Reset transition after reordering
+  useEffect(() => {
+    if (!transition) {
+      const timer = setTimeout(() => {
+        setTransition(true);
+      }, 20);
+      return () => clearTimeout(timer);
+    }
+  }, [transition]);
 
   const handleViewMore = () => {
     const realIndex = getRealIndex(index);
