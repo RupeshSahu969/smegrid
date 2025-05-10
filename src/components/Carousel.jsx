@@ -86,35 +86,34 @@ const Carousel = ({ slides: propSlides }) => {
   
 
   useEffect(() => {
-    // Scroll to the top when the page loads or changes
-    window.scrollTo(0, 0);  
-  
     const handleScroll = () => {
       if (window.scrollY > 50) {
         setNavbarColor('bg-white shadow-md'); 
-        setTextColor('text-black'); // Change text color to black
+        setTextColor('text-black');
         setLogoSrc(logo1); 
       } else {
         setNavbarColor('bg-[#0c2c5a]');
-
-        setTextColor('text-white'); // Revert text color to white
+        setTextColor('text-white'); 
         setLogoSrc(logo); 
       }
     };
   
+    // ✅ Call it once when the component mounts
+    handleScroll();
+  
     // Listen to scroll events
     window.addEventListener('scroll', handleScroll);
-    
-    // Cleanup on component unmount
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+  
+    // Cleanup
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  
   
 
   const handleExploreClick = (slideData) => {
     // Store data in local storage
     localStorage.setItem('selectedService', JSON.stringify(slideData));
+
     // Navigate to details page
     navigate('/services/details');
   };
@@ -256,22 +255,27 @@ const Carousel = ({ slides: propSlides }) => {
         }}
       />
     )}
-    <div className="absolute inset-0 bg-opacity-40 flex items-center">
-      {/* Blue Semicircle Overlay */}
-      <div className="absolute left-0 top-0 bottom-0 w-[50%] md:w-[40%] lg:w-[35%] flex items-center justify-center">
-        <div className="absolute inset-0 bg-[#0c2c5a] opacity-75 rounded-r-full"></div>
-        <div className="relative z-10 text-white px-6 md:px-10 text-center">
-          <h2 className="text-2xl md:text-4xl font-bold mb-4">{slide.title}</h2>
-          <p className="text-sm md:text-lg mb-6">{slide.description}</p>
-          <button
-            className="px-6 py-2 bg-[#ef7713] hover:bg-orange-600 text-white font-semibold rounded"
-            onClick={() => handleExploreClick(slide)}
-          >
-            {slide.cta1}
-          </button>
-        </div>
-      </div>
+   <div className="absolute inset-0 bg-opacity-40 flex items-center">
+  {/* Blue Semicircle Overlay */}
+  <div className="absolute left-0 top-0 bottom-0 w-[80%] sm:w-[60%] md:w-[50%] lg:w-[40%] xl:w-[35%] flex items-center justify-center">
+    <div className="absolute inset-0 bg-[#0c2c5a] opacity-75 rounded-r-full"></div>
+    <div className="relative z-10 text-white px-4 sm:px-6 md:px-8 lg:px-10 text-center">
+      <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4">
+        {slide.title}
+      </h2>
+      <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-4 sm:mb-6">
+        {slide.description}
+      </p>
+      <button
+        className="text-xs sm:text-sm md:text-base px-4 sm:px-5 md:px-6 py-1.5 sm:py-2 md:py-2.5 bg-[#ef7713] hover:bg-orange-600 text-white font-semibold rounded transition-all"
+        onClick={() => handleExploreClick(slide)}
+      >
+        {slide.cta1}
+      </button>
     </div>
+  </div>
+</div>
+
   </div>
 ))}
 
