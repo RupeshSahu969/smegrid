@@ -265,6 +265,7 @@ const Carousel = ({ slides: propSlides }) => {
       </h2>
       <p className="text-xs sm:text-sm md:text-base lg:text-lg mb-4 sm:mb-6">
         {slide.description}
+        
       </p>
       <button
         className="text-xs sm:text-sm md:text-base px-4 sm:px-5 md:px-6 py-1.5 sm:py-2 md:py-2.5 bg-[#ef7713] hover:bg-orange-600 text-white font-semibold rounded transition-all"
